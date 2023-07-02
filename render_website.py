@@ -2,8 +2,29 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
 from more_itertools import chunked
 
+from pathlib import Path
+from urllib.parse import quote
 import json
 import argparse
+
+
+def get_static(filename, format_='txt', folder=''):
+    # path = Path().cwd()
+    # correct_path = str(path).replace('\\', '/')
+    # static = f'file:///{correct_path}/static/{book_title}.{format_}'
+    # static = quote(static, safe='/:', encoding='UTF-8')
+    static = quote(f'/static/{folder}{filename}.{format_}', encoding='UTF-8')
+    return static
+
+
+def create_book_url(book_id):
+    book_url = f'https://tululu.org/b{book_id}/'
+    return book_url
+
+
+def get_url(filename):
+    url = None
+    return url
 
 
 def on_reload():
@@ -19,6 +40,11 @@ def on_reload():
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
+    env.globals.update({
+        'static': get_static,
+        'url': get_url,
+        'book_url': create_book_url,
+    })
     template = env.get_template('template.html')
 
     rendered_page = template.render(
