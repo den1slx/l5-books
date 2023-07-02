@@ -34,7 +34,9 @@ def on_reload():
     with open(path, 'r', encoding='UTF-8') as f:
         books = json.load(f)
 
-    chunks = chunked(books, 2)
+    pages = chunked(books, 20)
+
+    books_chunks = [chunked(page, 2) for page in pages]
 
     env = Environment(
         loader=FileSystemLoader('.'),
@@ -45,14 +47,15 @@ def on_reload():
         'url': get_url,
         'book_url': create_book_url,
     })
-    template = env.get_template('template.html')
+    template = env.get_template('templates/based_template.html')
 
-    rendered_page = template.render(
-        chunks=chunks,
-    )
+    for num, books_chunk in enumerate(books_chunks):
+        rendered_page = template.render(
+            chunks=books_chunk,
+        )
 
-    with open('index.html', 'w', encoding="utf8") as file:
-        file.write(rendered_page)
+        with open(f'templates/index_{num}.html', 'w', encoding="utf8") as file:
+            file.write(rendered_page)
 
 
 def create_parser():
@@ -67,7 +70,7 @@ def main():
     on_reload()  # for args.path
     server = Server()
     server.watch('template.html', on_reload)
-    server.serve(root='.')
+    server.serve(root='templates/')
     # http://127.0.0.1:5500/
 
 
