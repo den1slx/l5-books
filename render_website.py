@@ -9,13 +9,21 @@ import json
 import argparse
 
 
-def get_static(filename, format_='txt', folder='', cwd=False):
+def get_static(filename, format_='txt', folder='', cwd=False, img=False):
+    if img:
+        static = get_static_img(filename, folder)
+        return static
     if cwd:
         path = str(Path.cwd()).replace('\\', '/')
         static = f'{path}/static/{folder}{filename}.{format_}'
         return static
 
     static = quote(f'/static/{folder}{filename}.{format_}', encoding='UTF-8')
+    return static
+
+
+def get_static_img(filename, folder):
+    static = quote(f'/static/{folder}{filename}', encoding='UTF-8')
     return static
 
 
