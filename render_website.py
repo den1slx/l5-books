@@ -2,17 +2,19 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
 from more_itertools import chunked
 
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import quote
 import json
 import argparse
 
 
-def get_static(filename, format_='txt', folder=''):
-    # path = Path().cwd()
-    # correct_path = str(path).replace('\\', '/')
-    # static = f'file:///{correct_path}/static/{book_title}.{format_}'
-    # static = quote(static, safe='/:', encoding='UTF-8')
+def get_static(filename, format_='txt', folder='', cwd=False):
+    if cwd:
+        path = str(Path.cwd()).replace('\\', '/')
+        static = f'{path}/static/{folder}{filename}.{format_}'
+        return static
+
     static = quote(f'/static/{folder}{filename}.{format_}', encoding='UTF-8')
     return static
 
@@ -22,17 +24,28 @@ def create_book_url(book_id):
     return book_url
 
 
-def get_url(filename):
-    url = None
+def get_index_url(num):
+    url = f'index{num}.html'
     return url
+
+
+def get_full_filename(filename,  format_='.txt', folder=''):
+    return f'{folder}{filename}{format_}'
+
+
+def get_pages_count(books):
+    pages_count = len(books) // 20
+    if len(books) % 20:
+        pages_count += 1
+    return pages_count
 
 
 def on_reload():
     parser = create_parser()
     args = parser.parse_args()
     path = args.path
-    with open(path, 'r', encoding='UTF-8') as f:
-        books = json.load(f)
+    with open(path, 'r', encoding='UTF-8') as file:
+        books = json.load(file)
 
     pages = chunked(books, 20)
 
@@ -44,17 +57,19 @@ def on_reload():
     )
     env.globals.update({
         'static': get_static,
-        'url': get_url,
+        'index_url': get_index_url,
         'book_url': create_book_url,
     })
-    template = env.get_template('templates/based_template.html')
+    template = env.get_template('based_template.html')
 
     for num, books_chunk in enumerate(books_chunks):
+        num += 1
         rendered_page = template.render(
             chunks=books_chunk,
+            current_page=num,
+            pages_count=get_pages_count(books),
         )
-
-        with open(f'templates/index_{num}.html', 'w', encoding="utf8") as file:
+        with open(f'pages/index{num}.html', 'w', encoding="utf8") as file:
             file.write(rendered_page)
 
 
@@ -69,10 +84,15 @@ def create_parser():
 def main():
     on_reload()  # for args.path
     server = Server()
-    server.watch('template.html', on_reload)
-    server.serve(root='templates/')
+    server.watch('based_template.html', on_reload)
+    server.serve(root='')
+
+    # server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    # server.serve_forever()
+    # http://127.0.0.1:8000/
     # http://127.0.0.1:5500/
 
 
 if __name__ == '__main__':
     main()
+    # TODO Fix url
