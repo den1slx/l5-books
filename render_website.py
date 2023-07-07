@@ -9,10 +9,18 @@ import json
 import argparse
 
 
+def check_filename(filename):
+    symbols = ['?', '/', '\\', ':', '*', '"', '<', '>']
+    for symbol in symbols:
+        filename = filename.replace(symbol, '')
+    return filename
+
+
 def get_static(filename, format_='txt', folder='', cwd=False, img=False):
     if img:
-        static = get_static_img(filename, folder)
+        static = get_static_img(filename, folder, cwd)
         return static
+    filename = check_filename(filename)
     if cwd:
         path = str(Path.cwd()).replace('\\', '/')
         static = f'{path}/static/{folder}{filename}.{format_}'
@@ -22,7 +30,11 @@ def get_static(filename, format_='txt', folder='', cwd=False, img=False):
     return static
 
 
-def get_static_img(filename, folder):
+def get_static_img(filename, folder, cwd=False):
+    if cwd:
+        path = str(Path.cwd()).replace('\\', '/')
+        static = f'{path}/static/{folder}{filename}'
+        return static
     static = quote(f'/static/{folder}{filename}', encoding='UTF-8')
     return static
 
@@ -55,6 +67,7 @@ def on_reload():
     with open(path, 'r', encoding='UTF-8') as file:
         books = json.load(file)
 
+
     pages = chunked(books, 20)
 
     books_chunks = [chunked(page, 2) for page in pages]
@@ -67,6 +80,7 @@ def on_reload():
         'static': get_static,
         'index_url': get_index_url,
         'book_url': create_book_url,
+        'create_book': create_book_page,
     })
     template = env.get_template('based_template.html')
 
@@ -77,8 +91,34 @@ def on_reload():
             current_page=num,
             pages_count=get_pages_count(books),
         )
-        with open(f'pages/index{num}.html', 'w', encoding="utf8") as file:
+        with open(f'pages/index{num}.html', 'w', encoding="utf-8") as file:
             file.write(rendered_page)
+
+
+def create_book_page(title, book_id):
+    path = str(Path.cwd()).replace('\\', '/')
+    correct_title = check_filename(title)
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    env.globals.update({
+        'static': get_static
+    })
+    try:
+        with open(f'{path}/static/books/{correct_title}.txt', 'r', encoding='UTF-8') as file:
+            book = file.read()
+    except FileNotFoundError:
+        book = None
+
+    template = env.get_template('book_template.html')
+    if book:
+        rendered_page = template.render(
+            book=book
+        )
+        with open(f'pages/books/{book_id}.html', 'w', encoding="utf-8") as file:
+            file.write(rendered_page)
+    return title
 
 
 def create_parser():
@@ -87,6 +127,12 @@ def create_parser():
     parser.add_argument('--path', '-p', help='Path to json file, default: %(default)s',
                         default='books.json')
     return parser
+
+
+def get_book(path):
+    with open(path, 'r', encoding='UTF-8') as book_file:
+        book = book_file.read()
+    return book
 
 
 def main():
