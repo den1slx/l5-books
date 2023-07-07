@@ -66,14 +66,14 @@
       <div class="row">
         {% for book in chunk %}
           <div class="col">
-            <div class="card mb-3" style="max-width: 340px;">
+            <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                 <div class="col-md-4">
                   <img src="{{ static(book.image_name, folder='images/', img=True) }}" class="card-img-top" alt="Book cover image">
                 </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
+                    <h5 class="card-title">{{ create_book(book.title, book.book_id) }}</h5>
                     <p class="card-text"> {{ book.author }}</p>
                     <p class="card-text">Жанры:
                       {% for genre in book.genres %}
@@ -81,8 +81,12 @@
                       {% endfor %}
                     </p>
                     <a href="{{ static(book.title, folder='books/') }}" target="_blank"
-                       rel="noopener noreferrer" style="font-style: italic; font-size: 16px; font-family: Arial">
+                       rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
                       <p>Читать (Скачанная книга)</p>
+                    </a>
+                      <a href="books/{{book.book_id}}.html" target="_blank"
+                       rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
+                      <p>Читать (test)</p>
                     </a>
                     <a href="{{ book_url(book.book_id) }}" target="_blank" rel="noopener noreferrer"> Источник </a>
                     <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,13 +14,15 @@
   <body>
     <h4 class="text-center" style="font-style: italic">Книжная полка</h4>
     <hr>
+    {% block text %}
+    {% endblock text %}
+
     {% block pagination %}
     {% endblock pagination %}
     <hr>
 
     {% block container %}
     {% endblock container %}
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
