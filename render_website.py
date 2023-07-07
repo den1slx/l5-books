@@ -96,7 +96,8 @@ def on_reload():
 
 
 def create_book_page(title, book_id):
-    path = str(Path.cwd()).replace('\\', '/')
+    path = Path.cwd()
+    path = str(path).replace('\\', '/')
     correct_title = check_filename(title)
     env = Environment(
         loader=FileSystemLoader('.'),
@@ -110,7 +111,6 @@ def create_book_page(title, book_id):
             book = file.read()
     except FileNotFoundError:
         book = None
-
     template = env.get_template('book_template.html')
     if book:
         rendered_page = template.render(
@@ -136,6 +136,9 @@ def get_book(path):
 
 
 def main():
+    path = Path.cwd()
+    path = Path(f'{path}/pages/books/'.replace('\\', '/'))
+    path.mkdir(parents=True, exist_ok=True)
     on_reload()  # for args.path
     server = Server()
     server.watch('based_template.html', on_reload)
@@ -149,4 +152,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # TODO Fix url
