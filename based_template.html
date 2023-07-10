@@ -73,7 +73,11 @@
                 </div>
                   <div class="col-md-8">
                     <div class="card-body">
+                    {% if book_html %}
                     <h5 class="card-title">{{ create_book(book.title, book.book_id) }}</h5>
+                    {% else %}
+                      <h5 class="card-title">{{ book.title }}</h5>
+                    {% endif %}
                     <p class="card-text"> {{ book.author }}</p>
                     <p class="card-text">Жанры:
                       {% for genre in book.genres %}
@@ -82,13 +86,17 @@
                     </p>
                     <a href="{{ static(book.title, folder='books/') }}" target="_blank"
                        rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
-                      <p>Читать (Скачанная книга)</p>
+                      <p><i>Читать</i></p>
                     </a>
+                    {% if book_html %}
                       <a href="books/{{book.book_id}}.html" target="_blank"
-                       rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
-                      <p>Читать (test)</p>
-                    </a>
-                    <a href="{{ book_url(book.book_id) }}" target="_blank" rel="noopener noreferrer"> Источник </a>
+                         rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
+                        <p>Читать (test)</p>
+                      </a>
+                    {% endif %}
+                    {% if source %}
+                      <a href="{{ book_url(book.book_id) }}" target="_blank" rel="noopener noreferrer"> Источник </a>
+                    {% endif %}
                     <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                   </div>
                 </div>
