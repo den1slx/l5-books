@@ -64,9 +64,11 @@ def on_reload():
     parser = create_parser()
     args = parser.parse_args()
     path = args.path
+    source = args.source
+    book_html = args.book_html
+
     with open(path, 'r', encoding='UTF-8') as file:
         books = json.load(file)
-
 
     pages = chunked(books, 20)
 
@@ -90,6 +92,8 @@ def on_reload():
             chunks=books_chunk,
             current_page=num,
             pages_count=get_pages_count(books),
+            book_html=book_html,
+            source=source,
         )
         with open(f'pages/index{num}.html', 'w', encoding="utf-8") as file:
             file.write(rendered_page)
@@ -126,6 +130,9 @@ def create_parser():
         description='Книги')
     parser.add_argument('--path', '-p', help='Path to json file, default: %(default)s',
                         default='books.json')
+    parser.add_argument('--source', '-s', action='store_true', help='Link to source')
+    parser.add_argument('--book_html', '-b', action='store_true', help='Create html for every book')
+
     return parser
 
 
