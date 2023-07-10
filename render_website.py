@@ -26,7 +26,7 @@ def get_static(filename, format_='txt', folder='', cwd=False, img=False):
         static = f'{path}/static/{folder}{filename}.{format_}'
         return static
 
-    static = quote(f'/static/{folder}{filename}.{format_}', encoding='UTF-8')
+    static = quote(f'../static/{folder}{filename}.{format_}', encoding='UTF-8')
     return static
 
 
