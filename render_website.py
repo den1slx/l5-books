@@ -35,7 +35,7 @@ def get_static_img(filename, folder, cwd=False):
         path = str(Path.cwd()).replace('\\', '/')
         static = f'{path}/static/{folder}{filename}'
         return static
-    static = quote(f'/static/{folder}{filename}', encoding='UTF-8')
+    static = quote(f'../static/{folder}{filename}', encoding='UTF-8')
     return static
 
 
