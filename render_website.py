@@ -16,26 +16,27 @@ def check_filename(filename):
     return filename
 
 
-def get_static(filename, format_='txt', folder='', cwd=False, img=False):
+def get_static(filename, format_='txt', folder='', cwd=False, img=False, directory='static'):
+
     if img:
-        static = get_static_img(filename, folder, cwd)
+        static = get_static_img(filename, folder, directory, cwd)
         return static
     filename = check_filename(filename)
     if cwd:
         path = str(Path.cwd()).replace('\\', '/')
-        static = f'{path}/static/{folder}{filename}.{format_}'
+        static = f'{path}/{directory}/{folder}{filename}.{format_}'
         return static
 
-    static = quote(f'../static/{folder}{filename}.{format_}', encoding='UTF-8')
+    static = quote(f'../{directory}/{folder}{filename}.{format_}', encoding='UTF-8')
     return static
 
 
-def get_static_img(filename, folder, cwd=False):
+def get_static_img(filename, folder, directory, cwd=False):
     if cwd:
         path = str(Path.cwd()).replace('\\', '/')
-        static = f'{path}/static/{folder}{filename}'
+        static = f'{path}/{directory}/{folder}{filename}'
         return static
-    static = quote(f'../static/{folder}{filename}', encoding='UTF-8')
+    static = quote(f'../{directory}/{folder}{filename}', encoding='UTF-8')
     return static
 
 
