@@ -81,7 +81,6 @@ def on_reload():
         'static': get_static,
         'index_url': get_index_url,
         'book_url': create_book_url,
-        'create_book': create_book_page,
     })
     template = env.get_template('based_template.html')
 
@@ -94,32 +93,6 @@ def on_reload():
         )
         with open(f'pages/index{num}.html', 'w', encoding="utf-8") as file:
             file.write(rendered_page)
-
-
-def create_book_page(title, book_id):
-    path = Path.cwd()
-    path = str(path).replace('\\', '/')
-    correct_title = check_filename(title)
-    env = Environment(
-        loader=FileSystemLoader('.'),
-        autoescape=select_autoescape(['html', 'xml'])
-    )
-    env.globals.update({
-        'static': get_static
-    })
-    try:
-        with open(f'{path}/static/books/{correct_title}.txt', 'r', encoding='UTF-8') as file:
-            book = file.read()
-    except FileNotFoundError:
-        book = None
-    template = env.get_template('book_template.html')
-    if book:
-        rendered_page = template.render(
-            book=book
-        )
-        with open(f'pages/books/{book_id}.html', 'w', encoding="utf-8") as file:
-            file.write(rendered_page)
-    return title
 
 
 def create_parser():
@@ -139,7 +112,7 @@ def get_book(path):
 
 def main():
     path = Path.cwd()
-    path = Path(f'{path}/pages/books/'.replace('\\', '/'))
+    path = Path(f'{path}/pages/'.replace('\\', '/'))
     path.mkdir(parents=True, exist_ok=True)
     on_reload()  # for args.path
     server = Server()
