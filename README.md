@@ -23,13 +23,6 @@ pip install -r requirements.txt
     ```commandline
     python render_website.py --path 'books.json'
     ```
-    Также можете использовать аргументы `-s` и `-b`:
-  * `-s` добавляет ссылку на источник
-  * `-b` генерирует `html` файл для каждой скачанной книги. Эти файлы будут находиться в `/pages/books`
-
-    ```commandline
-    python render_website.py --path 'books.json' -s -b
-    ```
 
 * Сайт будет находиться [здесь](http://127.0.0.1:5500)
 * Также можно открыть `index.html` Там не будет странных символов вместо текста

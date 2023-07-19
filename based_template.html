@@ -88,15 +88,6 @@
                        rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
                       <p><i>Читать</i></p>
                     </a>
-                    {% if book_html %}
-                      <a href="books/{{book.book_id}}.html" target="_blank"
-                         rel="noopener noreferrer" style="font-style: italic;" type="text/plain">
-                        <p>Читать (test)</p>
-                      </a>
-                    {% endif %}
-                    {% if source %}
-                      <a href="{{ book_url(book.book_id) }}" target="_blank" rel="noopener noreferrer"> Источник </a>
-                    {% endif %}
                     <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                   </div>
                 </div>
