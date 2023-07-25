@@ -99,7 +99,7 @@ def create_parser():
     parser = argparse.ArgumentParser(
         description='Книги')
     parser.add_argument('--path', '-p', help='Path to json file, default: %(default)s',
-                        default='books.json')
+                        default='media/books.json')
 
     return parser
 
